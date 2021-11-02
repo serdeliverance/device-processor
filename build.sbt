@@ -7,7 +7,6 @@ ThisBuild / organizationName := "device-processor"
 
 
 lazy val circeVersion = "0.14.1"
-    // libraryDependencies += scalaTest % Test
 
 lazy val domain =
   project
@@ -16,6 +15,7 @@ lazy val domain =
 lazy val commons =
   project
     .in(file("commons"))
+    .settings(commonDependencies)
     .dependsOn(domain)
 
 lazy val producer =
@@ -28,9 +28,13 @@ lazy val consumer =
     .in(file("consumer"))
     .dependsOn(domain, commons)
 
-lazy val commonDependencies = Seq(
+
+
+lazy val commonDependencies =
+  libraryDependencies ++= Seq(
     "io.circe" %% "circe-core" % circeVersion,
     "io.circe" %% "circe-parser" % circeVersion,
     "io.circe" %% "circe-generic" % circeVersion,
     "io.circe"     %% "circe-generic-extras" % circeVersion,
-)
+    scalaTest % Test
+  )
