@@ -8,6 +8,7 @@ ThisBuild / organizationName := "device-processor"
 
 lazy val circeVersion = "0.14.1"
 lazy val akkaVersion = "2.6.17"
+lazy val akkaStreamKafkaVersion = "2.0.5"
 
 lazy val domain =
   project
@@ -38,6 +39,9 @@ lazy val commonDependencies =
     "io.circe" %% "circe-parser" % circeVersion,
     "io.circe" %% "circe-generic" % circeVersion,
     "io.circe"     %% "circe-generic-extras" % circeVersion,
+    "com.typesafe.akka"  %% "akka-actor"                % akkaVersion,
+    "com.typesafe.akka"  %% "akka-stream"               % akkaVersion,
+    "com.typesafe.akka"  %% "akka-stream-kafka"         % akkaStreamKafkaVersion,
     scalaTest % Test
   )
 
