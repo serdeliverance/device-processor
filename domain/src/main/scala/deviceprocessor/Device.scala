@@ -1,6 +1,6 @@
-package com.challenge.deviceprocessor
+package deviceprocessor
 
 import java.util.UUID
 import java.time.Instant
 
-case class Device(deviceId: UUID, name:String, createdAt: Instant)
+case class Device(deviceId: UUID, name: String, createdAt: Instant)

@@ -7,6 +7,7 @@ ThisBuild / organizationName := "device-processor"
 
 
 lazy val circeVersion = "0.14.1"
+lazy val akkaVersion = "2.6.17"
 
 lazy val domain =
   project
@@ -26,6 +27,7 @@ lazy val producer =
 lazy val consumer =
   project
     .in(file("consumer"))
+    .settings(consumerDependencies)
     .dependsOn(domain, commons)
 
 
@@ -37,4 +39,10 @@ lazy val commonDependencies =
     "io.circe" %% "circe-generic" % circeVersion,
     "io.circe"     %% "circe-generic-extras" % circeVersion,
     scalaTest % Test
+  )
+
+lazy val consumerDependencies =
+  libraryDependencies ++= Seq(
+    "com.typesafe.akka" %% "akka-actor-typed" % akkaVersion,
+    "com.typesafe.akka" %% "akka-actor-testkit-typed" % akkaVersion % Test
   )

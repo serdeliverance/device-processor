@@ -1,9 +1,10 @@
-package deviceprocessor
+package deviceprocessor.json
 
 import io.circe._
 import io.circe.generic.extras.semiauto._
-import com.challenge.deviceprocessor.Device
 import io.circe.generic.extras.Configuration
+
+import deviceprocessor._
 
 object JsonParsing {
 
