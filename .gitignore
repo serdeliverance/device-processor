@@ -3,3 +3,6 @@ target/
 .bloop/
 .metals/
 .vscode/
+*.log
+logs/
+metals.sbt
