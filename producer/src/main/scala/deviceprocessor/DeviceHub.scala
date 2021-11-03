@@ -11,6 +11,7 @@ object DeviceHub {
 
   def apply(deviceCount: Int, messageProducer: MessageProducer, topic: String): Behavior[Command] =
     Behaviors.setup { context =>
+      context.log.info(s"Setting up $deviceCount devices")
       val deviceActorList = (1 to deviceCount)
         .map(i => (i, Device(UUID.randomUUID(), s"device-$i", Instant.now())))
         .map(

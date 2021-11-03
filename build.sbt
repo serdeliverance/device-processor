@@ -9,6 +9,7 @@ ThisBuild / organizationName := "device-processor"
 lazy val circeVersion = "0.14.1"
 lazy val akkaVersion = "2.6.17"
 lazy val akkaStreamKafkaVersion = "2.0.5"
+lazy val logbackVersion = "1.2.5"
 
 lazy val domain =
   project
@@ -42,6 +43,7 @@ lazy val commonDependencies =
     "com.typesafe.akka"  %% "akka-actor"                % akkaVersion,
     "com.typesafe.akka"  %% "akka-stream"               % akkaVersion,
     "com.typesafe.akka"  %% "akka-stream-kafka"         % akkaStreamKafkaVersion,
+    "ch.qos.logback" % "logback-classic" % logbackVersion,
     scalaTest % Test
   )
 
