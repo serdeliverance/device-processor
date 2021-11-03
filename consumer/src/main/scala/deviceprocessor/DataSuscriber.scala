@@ -28,13 +28,22 @@ object DataSuscriber {
         val source =
           Consumer.plainSource(consumerSettings, Subscriptions.assignment(new TopicPartition(topic, 0)))
 
-        val preprocessing = Flow[ConsumerRecord[String, String]].map(record => decode[DeviceReading](record.value()))
+        val preprocessing =
+          Flow[ConsumerRecord[String, String]].map(record => decode[DeviceReading](record.value())).collect {
+            case Right(deviceReading) => deviceReading
+          }
 
-        // val broadcast = builder.add(Broadcast[Done](3))
+        val broadcast = builder.add(Broadcast[DeviceReading](3))
 
-        val testSink = Sink.foreach(println)
+        val databaseSink = Sink.ignore
 
-        source ~> preprocessing ~> testSink
+        val lastValueTrackerSink = Sink.ignore
+
+        val averageCalculatorSink = Sink.ignore
+
+        source ~> preprocessing ~> broadcast ~> databaseSink
+        broadcast ~> lastValueTrackerSink
+        broadcast ~> averageCalculatorSink
 
         ClosedShape
       }

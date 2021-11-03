@@ -16,7 +16,9 @@ The following diagram show the dependencies between the different modules:
 - `Scala`
 - `Akka Typed`
 - `Akka Streams`
+- `Alpakka Kafka` and `Alpakka Slick`
 - `Kafka`
+- `Postgres`
 
 ## Requisites
 
