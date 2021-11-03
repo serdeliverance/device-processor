@@ -39,7 +39,7 @@ object Producer {
 
     implicit val system = ActorSystem(Producer(deviceCount, messageProducer, topic), "Producer")
 
-    Source
+    val result = Source
       .tick(initialDelay = 0.seconds, interval = 3.seconds, PublishRead)
       .runWith(ActorSink.actorRef(system, StreamCompleted, ex => StreamFailed(ex)))
   }

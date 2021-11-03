@@ -43,6 +43,7 @@ lazy val commonDependencies =
     "com.typesafe.akka"  %% "akka-actor"                % akkaVersion,
     "com.typesafe.akka"  %% "akka-stream"               % akkaVersion,
     "com.typesafe.akka"  %% "akka-stream-kafka"         % akkaStreamKafkaVersion,
+    "com.typesafe.akka" %% "akka-slf4j" % akkaVersion,
     "ch.qos.logback" % "logback-classic" % logbackVersion,
     scalaTest % Test
   )
