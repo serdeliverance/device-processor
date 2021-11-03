@@ -23,12 +23,12 @@ lazy val commons =
 lazy val producer =
   project
     .in(file("producer"))
+    .settings(producerDependencies)
     .dependsOn(domain, commons)
 
 lazy val consumer =
   project
     .in(file("consumer"))
-    .settings(consumerDependencies)
     .dependsOn(domain, commons)
 
 
@@ -45,8 +45,9 @@ lazy val commonDependencies =
     scalaTest % Test
   )
 
-lazy val consumerDependencies =
+lazy val producerDependencies =
   libraryDependencies ++= Seq(
     "com.typesafe.akka" %% "akka-actor-typed" % akkaVersion,
+    "com.typesafe.akka" %% "akka-stream-typed" % akkaVersion,
     "com.typesafe.akka" %% "akka-actor-testkit-typed" % akkaVersion % Test
   )
