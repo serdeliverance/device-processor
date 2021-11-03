@@ -9,7 +9,9 @@ ThisBuild / organizationName := "device-processor"
 lazy val circeVersion = "0.14.1"
 lazy val akkaVersion = "2.6.17"
 lazy val akkaStreamKafkaVersion = "2.0.5"
+lazy val alpakkaKafkaVersion = "2.1.1"
 lazy val logbackVersion = "1.2.5"
+lazy val jacksonVersion = "2.11.4"
 
 lazy val domain =
   project
@@ -30,6 +32,7 @@ lazy val producer =
 lazy val consumer =
   project
     .in(file("consumer"))
+    .settings(consumerDependencies)
     .dependsOn(domain, commons)
 
 
@@ -53,4 +56,11 @@ lazy val producerDependencies =
     "com.typesafe.akka" %% "akka-actor-typed" % akkaVersion,
     "com.typesafe.akka" %% "akka-stream-typed" % akkaVersion,
     "com.typesafe.akka" %% "akka-actor-testkit-typed" % akkaVersion % Test
+  )
+
+lazy val consumerDependencies =
+  libraryDependencies ++= Seq(
+    "com.typesafe.akka" %% "akka-stream-kafka" % alpakkaKafkaVersion,
+    "com.typesafe.akka" %% "akka-stream" % akkaVersion,
+    "com.fasterxml.jackson.core" % "jackson-databind" % jacksonVersion
   )
