@@ -1,6 +1,6 @@
 # Device processor
 
-It is an `SBT multimodule` project with the following modules:
+It is a `SBT multi project` project with the following modules:
 
 - `domain`
 - `commons`: common library, dependecies and functionallity (for example: json parsing, kafka producer and some useful typeclasses)
