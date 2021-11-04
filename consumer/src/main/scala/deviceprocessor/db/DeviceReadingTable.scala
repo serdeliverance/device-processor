@@ -8,7 +8,7 @@ import java.time.Instant
 
 class DeviceReadingTable(tag: Tag) extends Table[DeviceReading](tag, "device_reading") {
 
-  def id: Rep[Option[Long]]     = column[Option[Long]]("id", O.PrimaryKey)
+  def id: Rep[Option[Long]]     = column[Option[Long]]("id", O.PrimaryKey, O.AutoInc)
   def deviceId: Rep[UUID]       = column[UUID]("device_id")(Maps.uuidToString)
   def currentValue: Rep[Double] = column[Double]("current_value")
   def unit: Rep[String]         = column[String]("unit")

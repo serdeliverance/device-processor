@@ -6,26 +6,26 @@ import akka.actor.typed.ActorRef
 import akka.actor.typed.scaladsl.Behaviors
 import java.util.UUID
 import deviceprocessor.utils.ListUtils._
+import deviceprocessor.actor.MetricsAsker._
+import _root_.deviceprocessor.domain.AverageReading
 
 object AverageCalculatorActor {
 
   // protocol
   sealed trait Command
-  case class Process(deviceReading: DeviceReading)          extends Command
-  case class GetAverage(replyTo: ActorRef[AverageReadings]) extends Command
-  case object Flush                                         extends Command
+  case class Process(deviceReading: DeviceReading)                              extends Command
+  case class GetAverage(replyTo: ActorRef[MetricsAsker.ReceiveAverageReadings]) extends Command
+  case object Flush                                                             extends Command
 
   // stream specific protocol
   case object StreamCompleted            extends Command
   case class StreamFailed(ex: Throwable) extends Command
 
-  case class AverageReadings(result: List[AverageReading])
-
   // behavior
   def apply(readings: Map[UUID, Seq[DeviceReading]] = Map()): Behavior[Command] = Behaviors.receive { (context, msg) =>
     msg match {
       case Process(deviceReading) =>
-        context.log.info(s"Storing reading: $deviceReading")
+        context.log.debug(s"Storing reading for average processing: $deviceReading")
         val device = readings.get(deviceReading.deviceId)
         val updatedReadings = device match {
           case Some(readings) => readings :+ deviceReading
@@ -35,8 +35,11 @@ object AverageCalculatorActor {
         AverageCalculatorActor(readings + updatedEntry)
       case GetAverage(replyTo) =>
         val result =
-          readings.toList.map(entry => AverageReading(entry._1, average(entry._2.map(_.currentValue).toList)))
-        replyTo ! AverageReadings(result)
+          readings.toList.map(
+            entry => AverageReading(entry._1, average(entry._2.map(_.currentValue).toList))
+          )
+        context.log.debug(s"Average readings: $result")
+        replyTo ! MetricsAsker.ReceiveAverageReadings(result)
         Behaviors.same
       case Flush =>
         context.log.info(s"Flushing stored elements")

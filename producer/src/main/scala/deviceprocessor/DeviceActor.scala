@@ -28,7 +28,9 @@ object DeviceActor {
         case PublishRead =>
           val deviceReading =
             DeviceReading(device.deviceId, Random.between(LOW_MEASSURE, MAX_MEASSURE), "farenheit", Instant.now, 1)
-          context.log.info(s"device: ${device.deviceId} pusblishing reading: $deviceReading")
+          context.log.info(
+            s"deviceId=${device.deviceId} name=${device.name} publishing read: value=${deviceReading.currentValue} unit=${deviceReading.unit} timestamp=${deviceReading.timestamp}"
+          )
           messageProducer.send(deviceReading, topic)
           Behaviors.same
         case StreamCompleted =>

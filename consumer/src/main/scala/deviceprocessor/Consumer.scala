@@ -22,6 +22,8 @@ import scala.concurrent.Future
 import akka.actor.typed.ActorRef
 import akka.util.Timeout
 import scala.concurrent.duration._
+import deviceprocessor.actor.MetricsAsker._
+import deviceprocessor.actor.MetricsAsker
 
 object Consumer {
 
@@ -33,6 +35,8 @@ object Consumer {
     val consumerSettings = ConsumerSettings(kafkaConsumerConfig, new StringDeserializer, new StringDeserializer)
     val topic            = config.getString("topic")
     val subscription     = Subscriptions.assignment(new TopicPartition(topic, 0))
+
+    val metricsPollInterval = config.getDuration("metrics-poll-interval")
 
     val initialBehavior: Behavior[SpawnProtocol.Command] = Behaviors.setup { context =>
       SpawnProtocol()
@@ -52,8 +56,15 @@ object Consumer {
         SpawnProtocol
           .Spawn(behavior = LastReadingTrackerActor(), name = "LastReadingTracker", props = Props.empty, ref)
       }
-      _ <- Future(consumerGraph(averageCalculator, lastReadingTracker, consumerSettings, subscription).run())
-    } yield Done
+      metricsAsker <- system.ask[ActorRef[MetricsAsker.Command]] { ref =>
+        SpawnProtocol
+          .Spawn(behavior = MetricsAsker(), name = "MetricsAsker", props = Props.empty, ref)
+      }
+      _ <- Future {
+        consumerGraph(averageCalculator, lastReadingTracker, consumerSettings, subscription).run()
+        metricsReader(metricsAsker, averageCalculator, lastReadingTracker).run()
+      }
+    } yield (averageCalculator, lastReadingTracker)
 
   }
 

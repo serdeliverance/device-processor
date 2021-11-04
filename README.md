@@ -9,7 +9,7 @@ It is an `SBT multimodule` project with the following modules:
 
 The following diagram show the dependencies between the different modules:
 
-![Alt text](diagrams/module_dependencies_graph.png?raw=true "Module Dependencies Graph") 
+![Alt text](diagrams/module_dependencies_graph.png?raw=true "Module Dependencies Graph")
 
 ## Stack
 
@@ -46,3 +46,7 @@ sbt producer/run
 ``` scala
 sbt consumer/run
 ```
+
+## Extra notes
+
+On the consumer side, in order to catch meassurements (average and last value readings) while streams are running, some [metrics utilities](./consumer/src/main/scala/deviceprocessor/actor/MetricsAsker.scala) were created. It takes metrics (by sending messages to the respective aggregator actors) every one minute (it can be configurable on the consumer's [application.conf](./consumer/src/main/resources/application.conf). Just to mention, this metric function it is also a stream that runs in parallel with the processing graph.
