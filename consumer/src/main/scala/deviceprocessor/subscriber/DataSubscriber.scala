@@ -36,12 +36,12 @@ import deviceprocessor.actor.AverageCalculatorActor
 object DataSubscriber {
 
   def consumerGraph(
-    consumerSettings: ConsumerSettings[String, String],
-    subscription: Subscription,
     averageCalculator: ActorRef[AverageCalculatorActor.Command],
-    lastReadingTracker: ActorRef[LastReadingTrackerActor.Command]
+    lastReadingTracker: ActorRef[LastReadingTrackerActor.Command],
+    consumerSettings: ConsumerSettings[String, String],
+    subscription: Subscription
   )(
-    implicit system: ActorSystem[Command],
+    implicit system: ActorSystem[_],
     slickSession: SlickSession
   ): RunnableGraph[NotUsed] =
     RunnableGraph.fromGraph(

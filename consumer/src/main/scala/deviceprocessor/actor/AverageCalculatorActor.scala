@@ -3,7 +3,6 @@ package deviceprocessor.actor
 import akka.actor.typed.Behavior
 import deviceprocessor.domain._
 import akka.actor.typed.ActorRef
-import deviceprocessor.Consumer.Command
 
 object AverageCalculatorActor {
 
