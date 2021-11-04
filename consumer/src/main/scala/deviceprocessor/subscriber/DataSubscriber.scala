@@ -35,11 +35,11 @@ import deviceprocessor.actor.AverageCalculatorActor
 
 object DataSubscriber {
 
-  def createSubscriberGraph(
+  def consumerGraph(
     consumerSettings: ConsumerSettings[String, String],
     subscription: Subscription,
-    lastReadingTracker: ActorRef[LastReadingTrackerActor.Command],
-    averageCalculator: ActorRef[AverageCalculatorActor.Command]
+    averageCalculator: ActorRef[AverageCalculatorActor.Command],
+    lastReadingTracker: ActorRef[LastReadingTrackerActor.Command]
   )(
     implicit system: ActorSystem[Command],
     slickSession: SlickSession
@@ -58,9 +58,11 @@ object DataSubscriber {
 
         val broadcast = builder.add(Broadcast[DeviceReading](3))
 
-        val lastValueTrackerProtocolAdapter: Flow[DeviceReading, LastReadingTrackerActor.Command, NotUsed] = ???
+        val lastValueTrackerProtocolAdapter =
+          Flow[DeviceReading].map(deviceReading => LastReadingTrackerActor.Process(deviceReading))
 
-        val averageCalculatorProtocolAdapter: Flow[DeviceReading, AverageCalculatorActor.Command, NotUsed] = ???
+        val averageCalculatorProtocolAdapter =
+          Flow[DeviceReading].map(deviceReading => AverageCalculatorActor.Process(deviceReading))
 
         val databaseSink = Slick.sink[DeviceReading](deviceReading => deviceReadingTable += deviceReading)
 

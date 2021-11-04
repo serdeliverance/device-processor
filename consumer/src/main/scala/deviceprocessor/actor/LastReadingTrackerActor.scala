@@ -6,6 +6,7 @@ import akka.actor.typed.Behavior
 import deviceprocessor.domain.LastReading
 import akka.actor.typed.scaladsl.Behaviors
 import akka.actor.typed.ActorRef
+import deviceprocessor.Consumer._
 
 object LastReadingTrackerActor {
 

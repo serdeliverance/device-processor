@@ -19,6 +19,7 @@ The following diagram show the dependencies between the different modules:
 - `Alpakka Kafka` and `Alpakka Slick`
 - `Kafka`
 - `Postgres`
+- `Circe`
 
 ## Requisites
 
