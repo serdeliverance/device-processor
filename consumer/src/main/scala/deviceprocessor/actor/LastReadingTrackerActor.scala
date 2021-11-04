@@ -26,7 +26,7 @@ object LastReadingTrackerActor {
     Behaviors.receive { (context, msg) =>
       msg match {
         case Process(deviceReading) =>
-          context.log.info("Adding device reading:")
+          context.log.info(s"Adding device reading: $deviceReading")
           val reading             = LastReading(deviceReading.deviceId, deviceReading.currentValue)
           val updatedLastReadings = lastReadings + (deviceReading.deviceId -> reading)
           LastReadingTrackerActor(updatedLastReadings)

@@ -25,7 +25,24 @@ The following diagram show the dependencies between the different modules:
 
 * SBT
 * Docker
+* docker-compose
 
 ## Run the app
 
-`TODO`
+1. Startup dockers
+
+```
+docker-compose up
+```
+
+2. Run the producer
+
+``` scala
+sbt producer/run
+```
+
+3. Run the consumer
+
+``` scala
+sbt consumer/run
+```

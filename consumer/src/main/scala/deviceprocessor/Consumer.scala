@@ -28,7 +28,7 @@ object Consumer {
   def main(args: Array[String]): Unit = {
 
     val config              = ConfigFactory.load()
-    val kafkaConsumerConfig = config.getConfig("kafka-consumer")
+    val kafkaConsumerConfig = config.getConfig("akka.kafka.consumer")
 
     val consumerSettings = ConsumerSettings(kafkaConsumerConfig, new StringDeserializer, new StringDeserializer)
     val topic            = config.getString("topic")

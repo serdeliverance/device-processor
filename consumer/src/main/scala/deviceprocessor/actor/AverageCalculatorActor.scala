@@ -26,7 +26,13 @@ object AverageCalculatorActor {
     msg match {
       case Process(deviceReading) =>
         context.log.info(s"Storing reading: $deviceReading")
-      // TODO
+        val device = readings.get(deviceReading.deviceId)
+        val updatedReadings = device match {
+          case Some(readings) => readings :+ deviceReading
+          case None           => Seq(deviceReading)
+        }
+        val updatedEntry = (deviceReading.deviceId -> updatedReadings)
+        AverageCalculatorActor(readings + updatedEntry)
       case GetAverage(replyTo) =>
         val result =
           readings.toList.map(entry => AverageReading(entry._1, average(entry._2.map(_.currentValue).toList)))
