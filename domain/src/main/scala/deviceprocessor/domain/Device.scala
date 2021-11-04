@@ -1,4 +1,4 @@
-package deviceprocessor
+package deviceprocessor.domain
 
 import java.util.UUID
 import java.time.Instant

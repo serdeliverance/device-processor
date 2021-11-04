@@ -1,6 +1,6 @@
 package deviceprocessor.kafka
 
-import deviceprocessor.DeviceReading
+import deviceprocessor.domain.DeviceReading
 import io.circe.syntax._
 import deviceprocessor.json.JsonParsing._
 import ByteEncoder._

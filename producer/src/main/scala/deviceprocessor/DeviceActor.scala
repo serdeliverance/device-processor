@@ -7,6 +7,7 @@ import java.time.Instant
 import deviceprocessor.kafka.ByteEncoderInstance._
 import akka.actor.typed.ActorRef
 import scala.util.Random
+import deviceprocessor.domain._
 
 object DeviceActor {
 

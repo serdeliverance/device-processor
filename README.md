@@ -9,20 +9,40 @@ It is an `SBT multimodule` project with the following modules:
 
 The following diagram show the dependencies between the different modules:
 
-`TODO components diagram`
+![Alt text](diagrams/module_dependencies_graph.png?raw=true "Module Dependencies Graph") 
 
 ## Stack
 
 - `Scala`
 - `Akka Typed`
 - `Akka Streams`
+- `Alpakka Kafka` and `Alpakka Slick`
 - `Kafka`
+- `Postgres`
+- `Circe`
 
 ## Requisites
 
 * SBT
 * Docker
+* docker-compose
 
 ## Run the app
 
-`TODO`
+1. Startup dockers
+
+```
+docker-compose up
+```
+
+2. Run the producer
+
+``` scala
+sbt producer/run
+```
+
+3. Run the consumer
+
+``` scala
+sbt consumer/run
+```

@@ -6,6 +6,7 @@ import deviceprocessor.kafka.MessageProducer
 import java.util.UUID
 import java.time.Instant
 import deviceprocessor.DeviceActor._
+import deviceprocessor.domain._
 
 object DeviceHub {
 
