@@ -32,6 +32,7 @@ import akka.stream.typed.scaladsl.ActorSink
 import deviceprocessor.actor.LastReadingTrackerActor
 import akka.actor.typed.ActorRef
 import deviceprocessor.actor.AverageCalculatorActor
+import scala.concurrent.duration._
 
 object DataSubscriber {
 
@@ -61,6 +62,13 @@ object DataSubscriber {
         val lastValueTrackerProtocolAdapter =
           Flow[DeviceReading].map(deviceReading => LastReadingTrackerActor.Process(deviceReading))
 
+        val readingPerMinuteGrouper =
+          Flow[DeviceReading]
+            .groupedWithin(Int.MaxValue, 1.minutes)
+            .map(readingBatch => readingBatch.groupBy(_.deviceId))
+            .map(deviceReadingMap => deviceReadingMap.view.mapValues(_.sortBy(_.timestamp).reverse.head))
+            .mapConcat(lastMinuteReadingsEntry => lastMinuteReadingsEntry.toList.map(_._2))
+
         val averageCalculatorProtocolAdapter =
           Flow[DeviceReading].map(deviceReading => AverageCalculatorActor.Process(deviceReading))
 
@@ -84,7 +92,7 @@ object DataSubscriber {
 
         source ~> preprocessing ~> broadcast ~> databaseSink
         broadcast ~> lastValueTrackerProtocolAdapter ~> lastValueTrackerSink
-        broadcast ~> averageCalculatorProtocolAdapter ~> averageCalculatorSink
+        broadcast ~> readingPerMinuteGrouper ~> averageCalculatorProtocolAdapter ~> averageCalculatorSink
 
         ClosedShape
       }
