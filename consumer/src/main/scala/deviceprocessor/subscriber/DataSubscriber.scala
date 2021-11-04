@@ -28,12 +28,18 @@ import slick.jdbc.PostgresProfile.api._
 import deviceprocessor.db.DeviceReadingTable._
 import akka.kafka.Subscription
 import deviceprocessor.domain.DeviceReading
+import akka.stream.typed.scaladsl.ActorSink
+import deviceprocessor.actor.LastReadingTrackerActor
+import akka.actor.typed.ActorRef
+import deviceprocessor.actor.AverageCalculatorActor
 
 object DataSubscriber {
 
   def createSubscriberGraph(
     consumerSettings: ConsumerSettings[String, String],
-    subscription: Subscription
+    subscription: Subscription,
+    lastReadingTracker: ActorRef[LastReadingTrackerActor.Command],
+    averageCalculator: ActorRef[AverageCalculatorActor.Command]
   )(
     implicit system: ActorSystem[Command],
     slickSession: SlickSession
@@ -52,15 +58,31 @@ object DataSubscriber {
 
         val broadcast = builder.add(Broadcast[DeviceReading](3))
 
+        val lastValueTrackerProtocolAdapter: Flow[DeviceReading, LastReadingTrackerActor.Command, NotUsed] = ???
+
+        val averageCalculatorProtocolAdapter: Flow[DeviceReading, AverageCalculatorActor.Command, NotUsed] = ???
+
         val databaseSink = Slick.sink[DeviceReading](deviceReading => deviceReadingTable += deviceReading)
 
-        val lastValueTrackerSink = Sink.ignore
+        val lastValueTrackerSink =
+          ActorSink
+            .actorRef[LastReadingTrackerActor.Command](
+              lastReadingTracker,
+              LastReadingTrackerActor.StreamCompleted,
+              ex => LastReadingTrackerActor.StreamFailed(ex)
+            )
 
-        val averageCalculatorSink = Sink.ignore
+        val averageCalculatorSink =
+          ActorSink
+            .actorRef[AverageCalculatorActor.Command](
+              averageCalculator,
+              AverageCalculatorActor.StreamCompleted,
+              ex => AverageCalculatorActor.StreamFailed(ex)
+            )
 
         source ~> preprocessing ~> broadcast ~> databaseSink
-        broadcast ~> lastValueTrackerSink
-        broadcast ~> averageCalculatorSink
+        broadcast ~> lastValueTrackerProtocolAdapter ~> lastValueTrackerSink
+        broadcast ~> averageCalculatorProtocolAdapter ~> averageCalculatorSink
 
         ClosedShape
       }
