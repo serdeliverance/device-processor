@@ -1,4 +1,4 @@
-package deviceprocessor
+package deviceprocessor.subscriber
 
 import akka.stream.scaladsl.RunnableGraph
 import akka.stream.scaladsl.GraphDSL
@@ -17,16 +17,33 @@ import deviceprocessor.json.JsonParsing._
 import io.circe.parser.decode
 import io.circe.syntax._
 import akka.stream.scaladsl.Sink
+import akka.actor.typed.ActorSystem
+import akka.stream.alpakka.slick.scaladsl.SlickSession
 
-object DataSuscriber {
+import deviceprocessor.Consumer._
+import akka.stream.alpakka.slick.scaladsl.Slick
 
-  def createSubscriberGraph(consumerSettings: ConsumerSettings[String, String], topic: String): RunnableGraph[NotUsed] =
+import slick.jdbc.PostgresProfile.api._
+
+import deviceprocessor.db.DeviceReadingTable._
+import akka.kafka.Subscription
+import deviceprocessor.domain.DeviceReading
+
+object DataSubscriber {
+
+  def createSubscriberGraph(
+    consumerSettings: ConsumerSettings[String, String],
+    subscription: Subscription
+  )(
+    implicit system: ActorSystem[Command],
+    slickSession: SlickSession
+  ): RunnableGraph[NotUsed] =
     RunnableGraph.fromGraph(
       GraphDSL.create() { implicit builder =>
         import GraphDSL.Implicits._
 
         val source =
-          Consumer.plainSource(consumerSettings, Subscriptions.assignment(new TopicPartition(topic, 0)))
+          Consumer.plainSource(consumerSettings, subscription)
 
         val preprocessing =
           Flow[ConsumerRecord[String, String]].map(record => decode[DeviceReading](record.value())).collect {
@@ -35,7 +52,7 @@ object DataSuscriber {
 
         val broadcast = builder.add(Broadcast[DeviceReading](3))
 
-        val databaseSink = Sink.ignore
+        val databaseSink = Slick.sink[DeviceReading](deviceReading => deviceReadingTable += deviceReading)
 
         val lastValueTrackerSink = Sink.ignore
 

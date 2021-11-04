@@ -9,7 +9,7 @@ It is an `SBT multimodule` project with the following modules:
 
 The following diagram show the dependencies between the different modules:
 
-`TODO components diagram`
+![Alt text](diagrams/module_dependencies_graph.png?raw=true "Module Dependencies Graph") 
 
 ## Stack
 

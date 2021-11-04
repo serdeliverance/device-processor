@@ -4,7 +4,7 @@ import io.circe._
 import io.circe.generic.extras.semiauto._
 import io.circe.generic.extras.Configuration
 
-import deviceprocessor._
+import deviceprocessor.domain._
 
 object JsonParsing {
 
