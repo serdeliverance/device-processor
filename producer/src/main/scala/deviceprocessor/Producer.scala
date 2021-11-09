@@ -1,18 +1,14 @@
 package deviceprocessor
 
-import akka.actor.typed.Behavior
-
-import deviceprocessor.DeviceActor._
+import akka.actor.typed.{ActorSystem, Behavior}
 import akka.actor.typed.scaladsl.Behaviors
-import akka.actor.typed.ActorSystem
 import akka.stream.scaladsl.Source
-import scala.concurrent.duration._
 import akka.stream.typed.scaladsl.ActorSink
 import com.typesafe.config.ConfigFactory
-import deviceprocessor.kafka.MessageProducer
-import deviceprocessor.kafka.MessageProducerConfiguration
-import akka.stream.ActorMaterializer
-import akka.actor.typed.scaladsl.adapter.ClassicActorSystemOps
+import deviceprocessor.DeviceActor._
+import deviceprocessor.kafka.{MessageProducer, MessageProducerConfiguration}
+
+import scala.concurrent.duration._
 
 object Producer {
 
@@ -39,7 +35,7 @@ object Producer {
 
     implicit val system = ActorSystem(Producer(deviceCount, messageProducer, topic), "Producer")
 
-    val result = Source
+    Source
       .tick(initialDelay = 0.seconds, interval = 3.seconds, PublishRead)
       .runWith(ActorSink.actorRef(system, StreamCompleted, ex => StreamFailed(ex)))
   }

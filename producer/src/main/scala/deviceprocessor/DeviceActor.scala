@@ -2,12 +2,12 @@ package deviceprocessor
 
 import akka.actor.typed.Behavior
 import akka.actor.typed.scaladsl.Behaviors
-import deviceprocessor.kafka.MessageProducer
-import java.time.Instant
-import deviceprocessor.kafka.ByteEncoderInstance._
-import akka.actor.typed.ActorRef
-import scala.util.Random
 import deviceprocessor.domain._
+import deviceprocessor.kafka.ByteEncoderInstance._
+import deviceprocessor.kafka.MessageProducer
+
+import java.time.Instant
+import scala.util.Random
 
 object DeviceActor {
 
@@ -36,7 +36,7 @@ object DeviceActor {
         case StreamCompleted =>
           context.log.info("Stream completed")
           Behaviors.same
-        case StreamFailed(ex) =>
+        case StreamFailed(_) =>
           context.log.info("Stream failed during processing")
           Behaviors.same
       }
