@@ -17,7 +17,7 @@ object ByteEncoder {
 
   def instance[T: Encoder](): ByteEncoder[T] = new ByteEncoder[T] {
     override def encode(t: T): Array[Byte] =
-      t.asJson.noSpaces.toString.getBytes
+      t.asJson.noSpaces.getBytes
   }
 }
 
