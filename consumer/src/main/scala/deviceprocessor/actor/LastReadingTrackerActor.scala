@@ -1,12 +1,11 @@
 package deviceprocessor.actor
 
-import deviceprocessor.domain._
-import java.util.UUID
-import akka.actor.typed.Behavior
+import akka.actor.typed.{ActorRef, Behavior}
 import akka.actor.typed.scaladsl.Behaviors
-import akka.actor.typed.ActorRef
-import deviceprocessor.Consumer._
 import deviceprocessor.actor.MetricsAsker._
+import deviceprocessor.domain._
+
+import java.util.UUID
 
 object LastReadingTrackerActor {
 
@@ -30,12 +29,12 @@ object LastReadingTrackerActor {
           LastReadingTrackerActor(updatedLastReadings)
         case GetLastReads(replyTo) =>
           context.log.debug(s"Last reading values: $lastReadings")
-          replyTo ! MetricsAsker.ReceiveLastReadings(lastReadings.values.toList)
+          replyTo ! ReceiveLastReadings(lastReadings.values.toList)
           Behaviors.same
         case StreamCompleted =>
           context.log.info(s"Stream completed")
           Behaviors.same
-        case StreamFailed(ex) =>
+        case StreamFailed(_) =>
           context.log.info(s"Retrieving last readings: $lastReadings")
           Behaviors.same
       }
