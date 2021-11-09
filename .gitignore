@@ -6,3 +6,4 @@ target/
 *.log
 logs/
 metals.sbt
+.idea/

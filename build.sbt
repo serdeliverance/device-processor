@@ -51,14 +51,17 @@ lazy val commonDependencies =
     "com.typesafe.slick" %% "slick"          % "3.3.3",
     "com.typesafe.akka" %% "akka-slf4j" % akkaVersion,
     "ch.qos.logback" % "logback-classic" % logbackVersion,
-    scalaTest % Test
   )
 
 lazy val consumerDependencies =
-  libraryDependencies ++= Seq(
-
+  libraryDependencies ++= testingDependencies ++ Seq(
     "com.typesafe.akka" %% "akka-stream-kafka" % alpakkaKafkaVersion,
     "com.lightbend.akka" %% "akka-stream-alpakka-slick" % alpakkaSlickVersion,
     "com.fasterxml.jackson.core" % "jackson-databind" % jacksonVersion,
-    "org.postgresql"     % "postgresql"      % postgresVersion,
+    "org.postgresql"     % "postgresql"      % postgresVersion
   )
+
+lazy val testingDependencies = Seq(
+  "com.typesafe.akka" %% "akka-actor-testkit-typed" % akkaVersion % Test,
+  scalaTest % Test
+)

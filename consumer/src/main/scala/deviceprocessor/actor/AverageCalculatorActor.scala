@@ -13,9 +13,9 @@ object AverageCalculatorActor {
 
   // protocol
   sealed trait Command
-  case class Process(deviceReading: DeviceReading)                              extends Command
-  case class GetAverage(replyTo: ActorRef[MetricsAsker.ReceiveAverageReadings]) extends Command
-  case object Flush                                                             extends Command
+  case class Process(deviceReading: DeviceReading)                 extends Command
+  case class GetAverage(replyTo: ActorRef[ReceiveAverageReadings]) extends Command
+  case object Flush                                                extends Command
 
   // stream specific protocol
   case object StreamCompleted            extends Command
@@ -31,7 +31,7 @@ object AverageCalculatorActor {
           case Some(readings) => readings :+ deviceReading
           case None           => Seq(deviceReading)
         }
-        val updatedEntry = (deviceReading.deviceId -> updatedReadings)
+        val updatedEntry = deviceReading.deviceId -> updatedReadings
         AverageCalculatorActor(readings + updatedEntry)
       case GetAverage(replyTo) =>
         val result =
