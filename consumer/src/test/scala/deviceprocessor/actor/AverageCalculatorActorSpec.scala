@@ -26,9 +26,9 @@ class AverageCalculatorActorSpec extends AnyWordSpec with BeforeAndAfterAll with
     averageCalculator ! Process(deviceReading.copy(currentValue = secondReadingValue))
     averageCalculator ! GetAverage(probe.ref)
 
-    val expectedReading = AverageReading(deviceReading.deviceId, 40)
+    val expectedAverage = AverageReading(deviceReading.deviceId, 40)
 
-    probe.expectMessage(ReceiveAverageReadings(List(expectedReading)))
+    probe.expectMessage(ReceiveAverageReadings(List(expectedAverage)))
 
     testkit.stop(averageCalculator, 3.seconds)
   }
