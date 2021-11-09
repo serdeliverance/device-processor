@@ -4,10 +4,10 @@ import akka.actor.typed.Behavior
 import deviceprocessor.domain._
 import akka.actor.typed.ActorRef
 import akka.actor.typed.scaladsl.Behaviors
+
 import java.util.UUID
 import deviceprocessor.utils.ListUtils._
 import deviceprocessor.actor.MetricsAsker._
-import _root_.deviceprocessor.domain.AverageReading
 
 object AverageCalculatorActor {
 
@@ -39,7 +39,7 @@ object AverageCalculatorActor {
             entry => AverageReading(entry._1, average(entry._2.map(_.currentValue).toList))
           )
         context.log.debug(s"Average readings: $result")
-        replyTo ! MetricsAsker.ReceiveAverageReadings(result)
+        replyTo ! ReceiveAverageReadings(result)
         Behaviors.same
       case Flush =>
         context.log.info(s"Flushing stored elements")
