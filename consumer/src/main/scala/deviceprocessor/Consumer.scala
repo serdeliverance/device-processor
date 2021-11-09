@@ -36,8 +36,6 @@ object Consumer {
     val topic            = config.getString("topic")
     val subscription     = Subscriptions.assignment(new TopicPartition(topic, 0))
 
-    val metricsPollInterval = config.getDuration("metrics-poll-interval")
-
     val initialBehavior: Behavior[SpawnProtocol.Command] = Behaviors.setup { context =>
       SpawnProtocol()
     }
@@ -64,7 +62,7 @@ object Consumer {
         consumerGraph(averageCalculator, lastReadingTracker, consumerSettings, subscription).run()
         metricsReader(metricsAsker, averageCalculator, lastReadingTracker).run()
       }
-    } yield (averageCalculator, lastReadingTracker)
+    } yield Done
 
   }
 
