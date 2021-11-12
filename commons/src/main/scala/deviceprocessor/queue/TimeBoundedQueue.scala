@@ -2,16 +2,16 @@ package deviceprocessor.queue
 
 import deviceprocessor.queue.TimeBoundedQueue.TimedEntry
 
-import java.time.LocalDateTime
-import scala.concurrent.duration.{DurationInt, FiniteDuration}
+import java.time.Instant
+import java.time.temporal.ChronoUnit
 
-class TimeBoundedQueue[T] private (elements: List[TimedEntry[T]], timeWindow: FiniteDuration = 2.minutes)
-    extends DQueue[T] {
+class TimeBoundedQueue[T] private (elements: List[TimedEntry[T]], timeWindow: Int = 2) extends DQueue[T] {
 
   override def enqueue(t: T): DQueue[T] = {
-    // TODO filter elements that match inside time window
-    val elementsInTimeWindow: List[TimedEntry[T]] = ???
-    new TimeBoundedQueue[T](elements :+ TimedEntry(t))
+    val lowBoundTimeWindow = Instant.now().minus(timeWindow, ChronoUnit.MINUTES)
+    val elementsInsideTimeWindow: List[TimedEntry[T]] =
+      elementsInsideTimeWindow.filter(elem => elem.enqueuedAt.isAfter(lowBoundTimeWindow))
+    new TimeBoundedQueue[T](elementsInsideTimeWindow :+ TimedEntry(t))
   }
 
   override def dequeue: (T, DQueue[T]) = elements match {
@@ -24,7 +24,7 @@ class TimeBoundedQueue[T] private (elements: List[TimedEntry[T]], timeWindow: Fi
 
 object TimeBoundedQueue {
 
-  case class TimedEntry[T](entity: T, enqueuedAt: LocalDateTime = LocalDateTime.now)
+  case class TimedEntry[T](entity: T, enqueuedAt: Instant = Instant.now)
 
   def apply[T](): TimeBoundedQueue[T] = new TimeBoundedQueue[T](List.empty)
 }

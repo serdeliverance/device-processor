@@ -22,6 +22,7 @@ object AverageCalculatorActor {
   case class StreamFailed(ex: Throwable) extends Command
 
   // behavior
+  // TODO refactor... use TimeBoundedQueue insted of Seq
   def apply(readings: Map[UUID, Seq[DeviceReading]] = Map()): Behavior[Command] = Behaviors.receive { (context, msg) =>
     msg match {
       case Process(deviceReading) =>
