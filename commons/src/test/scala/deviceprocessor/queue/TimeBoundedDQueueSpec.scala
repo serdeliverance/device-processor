@@ -41,8 +41,8 @@ class TimeBoundedDQueueSpec extends AnyWordSpec with Matchers {
     val result = Try(emptyQueue.dequeue)
 
     result match {
-      case Failure(exception) => succeed
-      case Success(_)         => fail()
+      case Failure(_) => succeed
+      case Success(_) => fail()
     }
   }
 
