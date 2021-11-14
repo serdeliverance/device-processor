@@ -12,7 +12,7 @@ import ByteEncoder._
 
 class MessageProducer(configuration: MessageProducerConfiguration) {
 
-  private[kafka] val producer = {
+  private val producer = {
     val props               = new Properties
     val stringSerializer    = classOf[StringSerializer].getCanonicalName
     val byteArraySerializer = classOf[ByteArraySerializer].getCanonicalName
