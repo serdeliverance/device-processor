@@ -39,7 +39,7 @@ lazy val consumer =
 
 
 lazy val commonDependencies =
-  libraryDependencies ++= Seq(
+  libraryDependencies ++= testingDependencies ++ Seq(
     "io.circe" %% "circe-core" % circeVersion,
     "io.circe" %% "circe-parser" % circeVersion,
     "io.circe" %% "circe-generic" % circeVersion,

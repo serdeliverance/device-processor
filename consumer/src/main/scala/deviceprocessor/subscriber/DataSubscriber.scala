@@ -1,37 +1,21 @@
 package deviceprocessor.subscriber
 
-import akka.stream.scaladsl.RunnableGraph
-import akka.stream.scaladsl.GraphDSL
 import akka.NotUsed
-import akka.stream.scaladsl.Broadcast
-import akka.Done
-import akka.stream.ClosedShape
+import akka.actor.typed.{ActorRef, ActorSystem}
+import akka.kafka.{ConsumerSettings, Subscription}
 import akka.kafka.scaladsl.Consumer
-import akka.kafka.ConsumerSettings
-import akka.kafka.Subscriptions
-import org.apache.kafka.common.TopicPartition
-import org.apache.kafka.clients.consumer.ConsumerRecord
-import akka.stream.scaladsl.Flow
+import akka.stream.ClosedShape
+import akka.stream.alpakka.slick.scaladsl.{Slick, SlickSession}
+import akka.stream.scaladsl.{Broadcast, Flow, GraphDSL, RunnableGraph}
+import akka.stream.typed.scaladsl.ActorSink
+import deviceprocessor.actor.{AverageCalculatorActor, LastReadingTrackerActor}
+import deviceprocessor.db.DeviceReadingTable._
+import deviceprocessor.domain.DeviceReading
 import deviceprocessor.json.JsonParsing._
-
 import io.circe.parser.decode
-import io.circe.syntax._
-import akka.stream.scaladsl.Sink
-import akka.actor.typed.ActorSystem
-import akka.stream.alpakka.slick.scaladsl.SlickSession
-
-import deviceprocessor.Consumer._
-import akka.stream.alpakka.slick.scaladsl.Slick
-
+import org.apache.kafka.clients.consumer.ConsumerRecord
 import slick.jdbc.PostgresProfile.api._
 
-import deviceprocessor.db.DeviceReadingTable._
-import akka.kafka.Subscription
-import deviceprocessor.domain.DeviceReading
-import akka.stream.typed.scaladsl.ActorSink
-import deviceprocessor.actor.LastReadingTrackerActor
-import akka.actor.typed.ActorRef
-import deviceprocessor.actor.AverageCalculatorActor
 import scala.concurrent.duration._
 
 object DataSubscriber {

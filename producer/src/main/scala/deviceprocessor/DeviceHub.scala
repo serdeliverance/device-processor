@@ -20,7 +20,7 @@ object DeviceHub {
             context.spawn(DeviceActor(indexDeviceTup._2, messageProducer, topic), s"DeviceActor-${indexDeviceTup._1}")
         )
 
-      Behaviors.receive { (context, message) =>
+      Behaviors.receive { (_, message) =>
         deviceActorList.foreach { deviceActor =>
           deviceActor ! message
         }
