@@ -1,5 +1,13 @@
 # Device processor
 
+A device processor application written in Scala/Akka.
+
+## Architecture and modules
+
+Following is a high level architecture diagram:
+
+![Alt text](diagrams/architecture.png?raw=true "Architecture")
+
 It is a `SBT multi project` with the following modules:
 
 - `domain`
